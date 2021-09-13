@@ -1,5 +1,11 @@
 # Say thanks to Locorock, you ingrates
+import datetime
+import errno
+import os
+import random
 import sys
+from os.path import dirname, abspath
+from time import sleep
 
 if __name__ == '__main__':
     coll = []
@@ -30,15 +36,39 @@ if __name__ == '__main__':
             else:
                 first = False
     print(coll)
-    with open("collection.conf", "w") as file1:
-        file1.write("!Regression\n$whitelist\n")
-        for card in coll:
-            code = card[2]
-            num = card[1]
-            name = card[0]
-            file1.write(code + " " + num + " --" + name.strip('"') + "\n")
-        file1.write("\n")
-        with open("banlist.add", "r") as file2:
-            lines = file2.readlines()
-            for line in lines:
-                file1.write(line)
+    try:
+        filename = "C:\\ProjectIgnis\\oldlist\\foo"
+        if not os.path.exists(os.path.dirname(filename)):
+            try:
+                os.makedirs(os.path.dirname(filename))
+            except OSError as exc:  # Guard against race condition
+                if exc.errno != errno.EEXIST:
+                    raise
+
+        with open("C:\\ProjectIgnis\\lflists\\collection.conf", "r") as old:
+            with open("C:\\ProjectIgnis\\oldlist\\collection-" + str(datetime.date.today()) + "#" + str(
+                    random.randint(1, 100)) + ".conf", "w") as postold:
+                print("BREAK")
+                for line in old.readlines():
+                    print(line, end="")
+                    postold.write(line)
+    except Exception as e:
+        print(e)
+
+    try:
+        with open("C:\\ProjectIgnis\\lflists\\0_collection.conf", "w+") as file1:
+            file1.write("!Regression\n$whitelist\n")
+            for card in coll:
+                code = card[2]
+                num = card[1]
+                name = card[0]
+                file1.write(code + " " + num + " --" + name.strip('"') + "\n")
+            file1.write("\n")
+            with open(str(dirname(abspath(__file__))) + "\\banlist.add", "r") as file2:
+                lines = file2.readlines()
+                for line in lines:
+                    file1.write(line)
+    except Exception as e:
+        print(e)
+
+    input("\nI DONE DID IT")
